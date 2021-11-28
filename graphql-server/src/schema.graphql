@@ -1,0 +1,26 @@
+scalar Date
+
+type Project {
+    _id: ID!
+    name: String!
+    state: Boolean!
+    description: String
+    phase: String
+    mandated:  String
+    budget: Int
+    general_obj: String
+    specific_obj: String
+    star_date: Date!
+    end_date: Date!
+    advances: [Advance]
+}
+
+type Advance{
+    observations: String!
+    description: String!
+}
+
+type Query {
+"Devuelve todos los cursos"
+  getProjects: [Project]
+}
