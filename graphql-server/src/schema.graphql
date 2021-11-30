@@ -1,26 +1,51 @@
 scalar Date
 
 type Project {
-    _id: ID!
-    name: String!
-    state: Boolean!
-    description: String
-    phase: String
-    mandated:  String
-    budget: Int
-    general_obj: String
-    specific_obj: String
-    star_date: Date!
-    end_date: Date!
-    advances: [Advance]
+  _id: ID!
+  name: String!
+  state: Boolean!
+  description: String
+  phase: String
+  mandated: String
+  budget: Int
+  general_obj: String
+  specific_obj: String
+  star_date: Date!
+  end_date: Date!
+  advances: [ID]
 }
 
-type Advance{
-    observations: String!
-    description: String!
+type Advance {
+  _id: ID!
+  observations: String!
+  description: String!
 }
 
 type Query {
-"Devuelve todos los cursos"
+  "Devuelve todos los cursos"
   getProjects: [Project]
+  "Devuelve un proyecto segun el ID"
+  getProjectByID(id: ID!): Project
+  "Devuelve todos los proyectos activos"
+  getActiveProjects: [Project]
+  "Devuelve todos los avances"
+  getAdvances: [Advance]
+}
+
+input Advanceinput {
+  observations: String!
+  description: String!
+}
+
+input ProjectAdvanceEdit {
+  advances: ID!
+}
+
+type Mutation {
+  "Crea un avance"
+  createAdvance(input: Advanceinput!): Advance
+  "Agrega un avance a un proyecto existente"
+  addAdvance(id: ID!, input: ProjectAdvanceEdit!): Project
+  "Editar un avance"
+  editAdvance(id: ID!, input: Advanceinput!): Advance
 }
