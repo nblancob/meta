@@ -14,6 +14,22 @@ type Project {
   end_date: Date!
   advances: [ID]
 }
+type ApplicationType{
+  _id: ID!
+  name:String
+  applied_project: ID
+  aplication_state: String
+}
+type User{
+  _id: ID!
+  name: String!
+  rol: String
+  email: String
+  password: String
+  authorization:Boolean
+  active_project: [ID]
+  application:ApplicationType
+}
 
 type Advance {
   _id: ID!
@@ -30,6 +46,8 @@ type Query {
   getActiveProjects: [Project]
   "Devuelve todos los avances"
   getAdvances: [Advance]
+  "Devuelve la lista de usuarios registrados"
+  getUsers:[User]
 }
 
 input Advanceinput {
@@ -41,6 +59,15 @@ input ProjectAdvanceEdit {
   advances: ID!
 }
 
+input AcceptUserInput{
+  authorization: Boolean!
+}
+input ApprovedProjectinput{
+  state: Boolean!
+}
+input PhaseInput{
+  phase:String
+}
 type Mutation {
   "Crea un avance"
   createAdvance(input: Advanceinput!): Advance
@@ -48,4 +75,10 @@ type Mutation {
   addAdvance(id: ID!, input: ProjectAdvanceEdit!): Project
   "Editar un avance"
   editAdvance(id: ID!, input: Advanceinput!): Advance
+  "aceptar usuarios registrados"
+  acceptUser(id:ID!, input:AcceptUserInput!): User
+  "aprobar proyecto (cambiar su estado)"
+  approvedProject(id: ID!, input:ApprovedProjectinput!): Project
+  "Cambiar la fase de un proyecto"
+  changePhaseProject(id:ID!, input:PhaseInput):Project
 }

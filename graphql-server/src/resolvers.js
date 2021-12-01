@@ -52,6 +52,17 @@ module.exports = {
       }
       return Advances;
     },
+    getUsers: async ()=>{
+      let db
+      let users=[];
+      try{
+        db=await connectDB();
+        users= await db.collection("Users").find().toArray();
+      }catch(error){
+        console.error(error)
+      }
+      return users
+    },
   },
   Mutation: {
     createAdvance: async (root, { input }) => {
@@ -98,5 +109,42 @@ module.exports = {
       }
       return Advance;
     },
+    acceptUser: async(root, {id, input}) =>{
+      let db;
+      let user;
+      try{
+        db= await connectDB();
+        await db.collection("Users").updateOne({_id:ObjectId(id)},{$set: input});
+        user=await db.collection("Users").findOne({_id:ObjectId(id)});
+      }catch(error){
+        console.error(error)
+      }
+      return user
+    },
+    approvedProject: async(root,{id,input}) =>{
+      let db;
+      let project;
+      try{
+        db=await connectDB();
+        await db.collection("Projects").updateOne({_id:ObjectId(id)},{$set:input});
+        project= db.collection("Projects").findOne({_id:ObjectId(id)});
+      }catch(error){
+        console.error(error)
+      }
+      return project
+    },
+    changePhaseProject: async(root,{id,input}) =>{
+      let db;
+      let project;
+      try{
+        db=await connectDB();
+        await db.collection("Projects").updateOne({_id:ObjectId(id)},{$set:input});
+        project= db.collection("Projects").findOne({_id:ObjectId(id)});
+      }catch(error){
+        console.error(error)
+      }
+      return project
+    },
   },
+  
 };
