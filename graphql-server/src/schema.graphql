@@ -1,26 +1,84 @@
 scalar Date
 
 type Project {
-    _id: ID!
-    name: String!
-    state: Boolean!
-    description: String
-    phase: String
-    mandated:  String
-    budget: Int
-    general_obj: String
-    specific_obj: String
-    star_date: Date!
-    end_date: Date!
-    advances: [Advance]
+  _id: ID!
+  name: String!
+  state: Boolean!
+  description: String
+  phase: String
+  mandated: String
+  budget: Int
+  general_obj: String
+  specific_obj: String
+  star_date: Date!
+  end_date: Date!
+  advances: [ID]
+}
+type ApplicationType{
+  _id: ID!
+  name:String
+  applied_project: ID
+  aplication_state: String
+}
+type User{
+  _id: ID!
+  name: String!
+  rol: String
+  email: String
+  password: String
+  authorization:Boolean
+  active_project: [ID]
+  application:ApplicationType
 }
 
-type Advance{
-    observations: String!
-    description: String!
+type Advance {
+  _id: ID!
+  observations: String!
+  description: String!
 }
 
 type Query {
-"Devuelve todos los cursos"
+  "Devuelve todos los cursos"
   getProjects: [Project]
+  "Devuelve un proyecto segun el ID"
+  getProjectByID(id: ID!): Project
+  "Devuelve todos los proyectos activos"
+  getActiveProjects: [Project]
+  "Devuelve todos los avances"
+  getAdvances: [Advance]
+  "Devuelve la lista de usuarios registrados"
+  getUsers:[User]
+}
+
+input Advanceinput {
+  observations: String!
+  description: String!
+}
+
+input ProjectAdvanceEdit {
+  advances: ID!
+}
+
+input AcceptUserInput{
+  authorization: Boolean!
+}
+input ApprovedProjectinput{
+  state: Boolean!
+}
+input PhaseInput{
+  phase:String
+}
+type Mutation {
+  "Crea un avance"
+  createAdvance(input: Advanceinput!): Advance
+  "Agrega un avance a un proyecto existente"
+  addAdvance(id: ID!, input: ProjectAdvanceEdit!): Project
+  "Editar un avance"
+  editAdvance(id: ID!, input: Advanceinput!): Advance
+  "aceptar usuarios registrados"
+  acceptUser(id:ID!, input:AcceptUserInput!): User
+  "aprobar proyecto (cambiar su estado)"
+  approvedProject(id: ID!, input:ApprovedProjectinput!): Project
+  "Cambiar la fase de un proyecto"
+  changePhaseProject(id:ID!, input:PhaseInput):Project
 }
