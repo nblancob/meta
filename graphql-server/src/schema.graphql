@@ -30,7 +30,10 @@ type User{
   active_project: [ID]
   application:ApplicationType
 }
-
+input authentication {
+  email:String!
+  password:String!
+}
 type Advance {
   _id: ID!
   observations: String!
@@ -51,6 +54,8 @@ type Query {
   getStudents:[User]
   "Enlista los proyectos que lidera determinado lider"
   getLeaderProject(mandated: String!): Project
+  "Autenticacion del usuario"
+  authUser(input:authentication!): Boolean
 }
 
 input Advanceinput {
@@ -93,7 +98,22 @@ input editProject{
   general_obj: String
   specific_obj: String
 }
+input ApplicationInput{
+  _id: ID!
+  name:String
+  applied_project: ID
+  aplication_state: String
+}
+input UserInput{
+  name: String
+  rol: String
+  email: String
+  password: String
+  authorization:Boolean
+  active_project: [ID]
+  application:ApplicationInput
 
+}
 
 type Mutation {
   "Crea un avance"
@@ -114,4 +134,8 @@ type Mutation {
   createProject(input:createProjectinput!): Project
   "Editar la información relacionada al proyecto unicamente nombre, presupuesto y objetivos generales y especificos"
   editProject(mandated: String, input:editProject!):Project
+  "Registrar del usuario en la plataforma"
+  regUser(input:UserInput!):User
+  "Actualiza los datos del usuario (correo, contraseña y nombre)"
+  updateUser(id: ID!,input:UserInput):User
 }

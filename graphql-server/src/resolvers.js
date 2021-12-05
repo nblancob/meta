@@ -85,8 +85,26 @@ module.exports = {
       }
       return leader
     },
+    authUser:async(root,{input})=>{
+      let db;
+      let user;
+      let auth;
+      try{
+        db=await connectDB();
+        user=await db.collection("Users").findOne(input);
+        if(user==null){
+          auth =false;
+        }else{
+          auth=true;
+        }
+      }catch(error){
+        console.error(error)
+      }
+      return auth
+    },
   },
   Mutation: {
+
     createAdvance: async (root, { input }) => {
       const newAdvance = Object.assign(input);
       let db;
@@ -213,6 +231,40 @@ module.exports = {
       }
       return editProject
     },
+    regUser:async(root,{input})=>{
+      const defaults={
+        name: '',
+        rol: '',
+        email: '',
+        password: '',
+        authorization:false,
+        active_project: [],
+        application:{}
+      }
+      let db;
+      let user;
+      let newuser=Object.assign(defaults,input)
+      try{
+        db=await connectDB();
+        user=await db.collection("Users").insertOne(newuser);
+        newuser._id=user.insertedId;
+        }catch(error){
+          console.error(error);
+        }
+        return newuser
+    },
+    updateUser: async (root, {id,input})=>{
+      let db;
+      let user;
+      try{
+        db= await connectDB();
+        await db.collection("Users").updateOne({_id:ObjectId(id)},{$set:input});
+        user= await db.collection("Users").findOne({_id:ObjectId(id)});
+      }catch(error){
+        console.error(error)
+      }
+      return user
+    }
   },
   
 };
