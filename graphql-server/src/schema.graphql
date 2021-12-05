@@ -12,7 +12,7 @@ type Project {
   specific_obj: String
   star_date: Date!
   end_date: Date!
-  advances: [ID]
+  advances: String
 }
 type ApplicationType{
   _id: ID!
@@ -36,7 +36,6 @@ type Advance {
   observations: String!
   description: String!
 }
-
 type Query {
   "Devuelve todos los cursos"
   getProjects: [Project]
@@ -48,6 +47,10 @@ type Query {
   getAdvances: [Advance]
   "Devuelve la lista de usuarios registrados"
   getUsers:[User]
+  "Devuelve todos los estudiantes (autorizados y no autorizados)"
+  getStudents:[User]
+  "Enlista los proyectos que lidera determinado lider"
+  getLeaderProject(mandated: String!): Project
 }
 
 input Advanceinput {
@@ -62,12 +65,36 @@ input ProjectAdvanceEdit {
 input AcceptUserInput{
   authorization: Boolean!
 }
-input ApprovedProjectinput{
+input editStateProjectinput{
   state: Boolean!
+}
+input editStateStudentinput{
+  authorization: Boolean!
 }
 input PhaseInput{
   phase:String
 }
+input createProjectinput{
+  name: String!
+  state: Boolean!
+  description: String
+  phase: String
+  mandated: String
+  budget: Int
+  general_obj: String
+  specific_obj: String
+  star_date: Date!
+  end_date: Date!
+  advances: String
+}
+input editProject{
+  name: String
+  budget: Int
+  general_obj: String
+  specific_obj: String
+}
+
+
 type Mutation {
   "Crea un avance"
   createAdvance(input: Advanceinput!): Advance
@@ -78,7 +105,13 @@ type Mutation {
   "aceptar usuarios registrados"
   acceptUser(id:ID!, input:AcceptUserInput!): User
   "aprobar proyecto (cambiar su estado)"
-  approvedProject(id: ID!, input:ApprovedProjectinput!): Project
-  "Cambiar la fase de un proyecto"
+  editStateProject(id: ID!, input:editStateProjectinput!): Project
+  "Cambiar el estado de un proyecto"
   changePhaseProject(id:ID!, input:PhaseInput):Project
+  "Cambiar el estado de un estudiante"
+  editStateStudent(rol:String, id:ID!, input:editStateStudentinput!): User
+  "Liderar un nuevo proyecto"
+  createProject(input:createProjectinput!): Project
+  "Editar la información relacionada al proyecto unicamente nombre, presupuesto y objetivos generales y especificos"
+  editProject(mandated: String, input:editProject!):Project
 }

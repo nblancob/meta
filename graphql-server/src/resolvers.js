@@ -43,7 +43,7 @@ module.exports = {
     },
     getAdvances: async () => {
       let db;
-      let Advances = [];
+      let Advances;
       try {
         db = await connectDB();
         Advances = await db.collection("Advances").find().toArray();
@@ -62,6 +62,28 @@ module.exports = {
         console.error(error)
       }
       return users
+    },
+    getStudents: async()=>{
+      let db
+      let students=[];
+      try{
+        db=await connectDB();
+        students= await db.collection("Users").find({rol: "student"}).toArray();        
+      }catch(error){
+        console.error(error)
+      }
+      return students
+    },
+    getLeaderProject: async(root, {mandated})=>{
+      let db;
+      let leader;
+      try {
+        db = await connectDB();
+        leader = await db.collection("Projects").findOne({mandated});
+      } catch (error) {
+        console.log(error)
+      }
+      return leader
     },
   },
   Mutation: {
@@ -121,7 +143,7 @@ module.exports = {
       }
       return user
     },
-    approvedProject: async(root,{id,input}) =>{
+    editStateProject: async(root,{id,input}) =>{
       let db;
       let project;
       try{
@@ -132,6 +154,18 @@ module.exports = {
         console.error(error)
       }
       return project
+    },
+    editStateStudent: async(root, {rol,id, input})=>{
+      let db;
+      let user;
+      try{
+        db= await connectDB();
+        await db.collection("Users").updateOne({rol:"student", _id:ObjectId(id)},{$set:input});
+        user=db.collection("Users").findOne({rol:"student", _id:ObjectId(id)});
+      }catch(error){
+        console.error(error)
+      }
+      return user
     },
     changePhaseProject: async(root,{id,input}) =>{
       let db;
@@ -144,6 +178,40 @@ module.exports = {
         console.error(error)
       }
       return project
+    },
+    createProject: async(root, {input})=>{
+      const defaults={
+        description: '',
+        phase: '',
+        mandated: '',
+        budget: 0,
+        general_obj: '',
+        specific_obj:'',
+        advances:''
+      }
+      const newProject = Object.assign(defaults, input);
+      let db;
+      let project;
+      try{
+        db=await connectDB()
+        project = await db.collection("Projects").insertOne(newProject)
+        newProject._id=project.insertedId
+      }catch(error){
+        console.error(error);
+      }
+      return newProject
+    },
+    editProject: async(root,{mandated, input}) =>{
+      let db;
+      let editProject;
+      try{
+        db=await connectDB();
+        await db.collection("Projects").updateOne({mandated},{$set:input});
+        editProject= db.collection("Projects").findOne({mandated});
+      }catch(error){
+        console.error(error)
+      }
+      return editProject
     },
   },
   

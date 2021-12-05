@@ -12,6 +12,7 @@ async function connectDB() {
       useNewUrlParser: true,
     });
     connection = client.db(DB_NAME);
+    console.log("Connected to DB");
   } catch (error) {
     console.log(error);
     process.exit(1);
