@@ -9,7 +9,8 @@ const { join } = require("path");
 const resolvers = require("./resolvers");
 const typeDefs = readFileSync(join(__dirname, "schema.graphql"),'utf-8');
 const schema = makeExecutableSchema({ typeDefs, resolvers });
-
+const connectDB = require("./database");
+connectDB();
 app.use(
   "/api",
   graphqlHTTP({
