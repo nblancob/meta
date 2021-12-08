@@ -56,6 +56,8 @@ type Query {
   getLeaderProject(mandated: String!): Project
   "Autenticacion del usuario"
   authUser(input:authentication!): Boolean
+  "Devuelve la lista de solicitudes de estudiantes pendientes de aceptar o rechazar para un lider "
+  getApplicationList(mandated:String!):[User]
 }
 
 input Advanceinput {
@@ -115,6 +117,7 @@ input UserInput{
 
 }
 
+
 type Mutation {
   "Crea un avance"
   createAdvance(input: Advanceinput!): Advance
@@ -138,4 +141,7 @@ type Mutation {
   regUser(input:UserInput!):User
   "Actualiza los datos del usuario (correo, contraseña y nombre)"
   updateUser(id: ID!,input:UserInput):User
+  "Acepta o rechaza solicitudes de inscripcion a un proyecto"
+  acceptStudentApplication(id:ID!,input:Boolean!):User
+
 }

@@ -102,6 +102,23 @@ module.exports = {
       }
       return auth
     },
+    getApplicationList: async(root,{mandated})=>{
+      let db;
+      let students=[];
+      let projects
+      let student
+      try{
+        db= await connectDB();
+        projects=await db.collection("Projects").find({mandated}).toArray();
+        for(const project of projects){
+          student=await db.collection("Users").find({"application.project_applied":project._id, rol:"student"}).toArray();
+          students=students.concat(student);
+        };   
+      }catch{
+        console.error(error);
+      }
+     return students
+    }
   },
   Mutation: {
 
@@ -264,7 +281,19 @@ module.exports = {
         console.error(error)
       }
       return user
+    },
+    acceptStudentApplication: async (root, {id,input})=>{
+      let db;
+      let student;
+      try{
+        db=await connectDB();
+        await db.collection("Users").updateOne({_id:ObjectId(id)},{$set:{"application.aplication_state":input}});
+        student=await db.collection("Users").findOne({_id:ObjectId(id)});
+      }catch(error){
+        console.error(error)
+      }
+      return student
     }
   },
-  
+
 };
