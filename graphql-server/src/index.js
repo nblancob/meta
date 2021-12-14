@@ -7,10 +7,18 @@ const { graphqlHTTP } = require("express-graphql");
 const { readFileSync } = require("fs");
 const { join } = require("path");
 const resolvers = require("./resolvers");
-const typeDefs = readFileSync(join(__dirname, "schema.graphql"),'utf-8');
+const typeDefs = readFileSync(join(__dirname, "schema.graphql"), "utf-8");
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 const connectDB = require("./database");
+const cors = require("cors");
+const corsOptions = {
+  origin: "http://localhost:3001",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+};
 connectDB();
+app.use(cors(corsOptions));
 app.use(
   "/api",
   graphqlHTTP({
