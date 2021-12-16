@@ -1,0 +1,2 @@
+Johan Sebastián Reina Parada
+Estudiante de ingeniería mecatrónica de la Universidad Militar Nueva Granada, me encuentro desarrollando habilidades en la programación, haciendo énfasis en la programación Web.
